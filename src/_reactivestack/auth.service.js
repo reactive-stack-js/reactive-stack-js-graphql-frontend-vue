@@ -37,7 +37,6 @@ class AuthService {
 		if (!!userInfo && !!userInfo.user && !!userInfo.user.expires_at) {
 			const expiresAt = userInfo.user.expires_at;
 			const now = new Date().getTime();
-			console.log({userInfo, now, expiresAt, check: now < expiresAt})
 			if (now < expiresAt) return this.sendState(userInfo);
 		}
 		this.logout();

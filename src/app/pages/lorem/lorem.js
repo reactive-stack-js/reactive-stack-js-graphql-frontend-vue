@@ -8,15 +8,28 @@ import AuthService from "@/_reactivestack/auth.service";
 
 import {loremStore} from "./_store/lorem.store";
 import LoremUpdater from "./_store/lorem.updater";
+import {jsonToGraphQLQuery} from "json-to-graphql-query";
 
 let updater;
-const VUE_APP_API_PATH = process.env.VUE_APP_API_PATH;
+const VUE_APP_GRAPHQL_PATH = process.env.VUE_APP_GRAPHQL_PATH;
+
+const _sendMutationQuery = async (command, __args, fields) => {
+	const mutation = {};
+	mutation[command] = {__args};
+	mutation[command] = _.merge(mutation[command], fields);
+	const mutationQuery = jsonToGraphQLQuery({mutation}, {pretty: true});
+
+	const response = await fetch(VUE_APP_GRAPHQL_PATH, {
+		method: 'POST',
+		headers: AuthService.getAuthHeader(),
+		body: JSON.stringify({query: mutationQuery})
+	});
+	return await response.json();
+};
 
 export default {
 	name: 'Lorem',
-	props: ['loremId'],
-
-	store: loremStore,
+	props: ['draftId'],
 
 	setup(props) {
 		let store = ref(loremStore);
@@ -24,12 +37,12 @@ export default {
 		if (AuthService.loggedIn()) {
 			if (updater) updater.destroy();
 			updater = new LoremUpdater();
-			updater.setConfig({_id: props.loremId});
+			updater.setConfig({_id: props.draftId});
 		}
 
 		const isDisabled = (fieldName) => {
-			if (store.lorem) {
-				let meta = store.lorem.meta;
+			if (store.value.draft) {
+				let meta = store.value.draft.meta;
 				if (meta) {
 					let field = _.get(meta, fieldName);
 					if (field) {
@@ -41,65 +54,67 @@ export default {
 			return false;
 		};
 
-		const isDraft = computed(() => store.lorem.isDraft);
+		const isDraft = computed(() => !_.isEmpty(store.value.draft));
 
 		watch(isDraft, (value) => {
 			if (value !== true) {
+				alert('no more draft...');
 				// TODO: goto homepage...
 			}
 		});
 
 		return {
+			store,
+
 			SPECIES: ['Human', 'Draenei', 'Dryad', 'Dwarf', 'Gnome', 'Worgde'],
 
-			isDisabled, isDraft,
+			isDraft, isDisabled,
 
 			momentDate: (date) => moment(date).format('YYYY/MM/DD HH:mm:ss'),
 
 			onFocus: (field) => {
-				if (this.isDisabled(field)) return;
-				fetch(VUE_APP_API_PATH + '/api/lorem/focus/' + store.lorem._id, {
-					method: 'POST',
-					headers: AuthService.getAuthHeader(),
-					body: JSON.stringify({field})
+				if (isDisabled(field)) return;
+
+				_sendMutationQuery('draftFocus', {
+					userId: AuthService.user().id,
+					draftId: store.value.draft._id,
+					field
 				});
 			},
 
 			onBlur: (field) => {
-				fetch(VUE_APP_API_PATH + '/api/lorem/blur/' + store.lorem._id, {
-					method: 'POST',
-					headers: AuthService.getAuthHeader(),
-					body: JSON.stringify({field})
+				_sendMutationQuery('draftBlur', {
+					userId: AuthService.user().id,
+					draftId: store.value.draft._id,
+					field
 				});
 			},
 
 			onChange: _.throttle(function (e) {
 				let {target: {name: field, value}} = e;
-				store.setValue(field, value);
+				store.value.setValue(field, value);
 
-				fetch(VUE_APP_API_PATH + '/api/lorem/change/' + store.lorem._id, {
-					method: 'POST',
-					headers: AuthService.getAuthHeader(),
-					body: JSON.stringify({value, field})
+				_sendMutationQuery('draftChange', {
+					userId: AuthService.user().id,
+					draftId: store.value.draft._id,
+					change: {value, field}
 				});
 			}, 250, {'leading': true}),
 
 			closeDialog: async () => {
-				const response = await fetch(VUE_APP_API_PATH + '/api/lorem/cancel/' + store.lorem._id, {
-					method: 'POST',
-					headers: AuthService.getAuthHeader(),
-					body: JSON.stringify({})
+				const completed = await _sendMutationQuery('draftCancel', {
+					userId: AuthService.user().id,
+					draftId: store.value.draft._id
 				});
-				const completed = await response.json();
 				if (completed) router.push('/');
 				else console.error(' - closeDialog response', completed);  	// oops...
 			},
 
 			saveLorem: async () => {
-				const response = await fetch(VUE_APP_API_PATH + '/api/lorem/save/', {
+				const response = await fetch(VUE_APP_GRAPHQL_PATH + '/api/lorem/save/', {
 					method: 'POST',
 					headers: AuthService.getAuthHeader(),
-					body: JSON.stringify({document: store.lorem})
+					body: JSON.stringify({document: store.value.lorem})
 				});
 				const completed = await response.json();
 				if (completed) router.push('/');

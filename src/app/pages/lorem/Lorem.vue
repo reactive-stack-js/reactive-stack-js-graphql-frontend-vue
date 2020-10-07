@@ -104,7 +104,7 @@
 				Draft created on
 				<b>{{ momentDate(store.lorem.createdAt) }}</b> using
 				<b>version {{ store.lorem.iteration }}</b> of <b>{{ store.lorem.username }}</b>.
-				<span v-show="store.lorem.updatedAt"><br/>Last update at <b>{{ momentDate(store.lorem.updatedAt) }}</b>.</span>
+				<span v-show="store.draft.updatedAt"><br/>Last update at <b>{{ momentDate(store.lorem.updatedAt) }}</b>.</span>
 			</p>
 		</div>
 
