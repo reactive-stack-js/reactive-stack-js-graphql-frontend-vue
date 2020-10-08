@@ -1,4 +1,4 @@
-import {ref, computed, watch} from 'vue';
+import {ref, computed, watch, onUnmounted} from 'vue';
 
 import _ from "lodash";
 import moment from "moment";
@@ -8,24 +8,9 @@ import AuthService from "@/_reactivestack/auth.service";
 
 import {loremStore} from "./_store/lorem.store";
 import LoremUpdater from "./_store/lorem.updater";
-import {jsonToGraphQLQuery} from "json-to-graphql-query";
+import sendMutationQuery from "../../../_reactivestack/_f.send.mutation.query";
 
 let updater;
-const VUE_APP_GRAPHQL_PATH = process.env.VUE_APP_GRAPHQL_PATH;
-
-const _sendMutationQuery = async (command, __args, fields) => {
-	const mutation = {};
-	mutation[command] = {__args};
-	mutation[command] = _.merge(mutation[command], fields);
-	const mutationQuery = jsonToGraphQLQuery({mutation}, {pretty: true});
-
-	const response = await fetch(VUE_APP_GRAPHQL_PATH, {
-		method: 'POST',
-		headers: AuthService.getAuthHeader(),
-		body: JSON.stringify({query: mutationQuery})
-	});
-	return await response.json();
-};
 
 export default {
 	name: 'Lorem',
@@ -39,6 +24,12 @@ export default {
 			updater = new LoremUpdater();
 			updater.setConfig({_id: props.draftId});
 		}
+
+		onUnmounted(() => {
+			store.value.reset();
+			if (updater) updater.destroy();
+			updater = null;
+		});
 
 		const isDisabled = (fieldName) => {
 			if (store.value.draft) {
@@ -56,8 +47,8 @@ export default {
 
 		const isDraft = computed(() => !_.isEmpty(store.value.draft));
 
-		watch(isDraft, (value) => {
-			if (value !== true) router.push('/');
+		watch(isDraft, async (value) => {
+			if (value !== true) await router.push('/');
 		});
 
 		return {
@@ -72,14 +63,14 @@ export default {
 			onFocus: (field) => {
 				if (isDisabled(field)) return;
 
-				_sendMutationQuery('draftFocus', {
+				return sendMutationQuery('draftFocus', {
 					draftId: store.value.draft._id,
 					field
 				});
 			},
 
 			onBlur: (field) => {
-				_sendMutationQuery('draftBlur', {
+				return sendMutationQuery('draftBlur', {
 					draftId: store.value.draft._id,
 					field
 				});
@@ -89,34 +80,27 @@ export default {
 				let {target: {name: field, value}} = e;
 				store.value.setValue(field, value);
 
-				_sendMutationQuery('draftChange', {
+				return sendMutationQuery('draftChange', {
 					draftId: store.value.draft._id,
 					change: {value, field}
 				});
 			}, 250, {'leading': true}),
 
 			closeDialog: async () => {
-				const completed = await _sendMutationQuery('draftCancel', {
+				const completed = await sendMutationQuery('draftCancel', {
 					draftId: store.value.draft._id
 				});
-				if (completed) router.push('/');
+				if (completed) await router.push('/');
 				else console.error(' - closeDialog response', completed);  	// oops...
 			},
 
 			saveLorem: async () => {
-				const completed = await _sendMutationQuery('draftSave', {
-					draft: store.value.draft
+				const completed = await sendMutationQuery('draftSave', {
+					draftId: store.value.draft._id
 				});
-				if (completed) router.push('/');
+				if (completed) await router.push('/');
 				else console.error(' - saveLorem response', completed);	// oops...
 			}
 		}
-	},
-
-	beforeRouteLeave(to, from, next) {
-		this.store.reset();
-		if (updater) updater.destroy();
-		updater = null;
-		next();
 	}
 }

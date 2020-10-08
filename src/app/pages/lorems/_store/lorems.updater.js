@@ -13,9 +13,9 @@ const _initialConfig = () => ({
 
 const STRING_COLUMNS = ['firstname', 'lastname', 'email', 'description'];
 const NUMBER_COLUMNS = ['iteration', 'rating'];
+const _SECTIONS = ['lorems', 'selected', 'selectedVersions'];
 
 export default class LoremsUpdater extends AUpdater {
-	static _SECTIONS = ['lorems', 'selected', 'selectedVersions'];
 
 	constructor() {
 		super('LoremsUpdater');
@@ -23,7 +23,7 @@ export default class LoremsUpdater extends AUpdater {
 	}
 
 	_isMyPath(path) {
-		return _.includes(LoremsUpdater._SECTIONS, path);
+		return _.includes(_SECTIONS, path);
 	}
 
 	_process(message) {

@@ -1,4 +1,4 @@
-import {ref} from 'vue';
+import {ref, onUnmounted} from 'vue';
 
 import _ from 'lodash';
 import moment from "moment";
@@ -44,6 +44,12 @@ export default {
 			updater = new LoremsUpdater();
 			updater.setConfig();
 		}
+
+		onUnmounted(() => {
+			store.value.reset();
+			if (updater) updater.destroy();
+			updater = null;
+		});
 
 		const setUpdaterConfig = () => {
 			if (updater) {
@@ -108,13 +114,5 @@ export default {
 				setUpdaterConfig();
 			}
 		};
-	},
-
-	beforeRouteLeave(to, from, next) {
-		console.log(' - beforeRouteLeave Lorems');
-		loremsStore.reset();
-		if (updater) updater.destroy();
-		updater = null;
-		next();
 	}
 }

@@ -1,5 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router';
 
+import _ from "lodash";
+
 import About from './app/pages/about/About.vue';
 import Lorem from './app/pages/lorem/Lorem.vue';
 import Lorems from './app/pages/lorems/Lorems.vue';
@@ -9,7 +11,6 @@ import Social from './app/pages/login/Social.vue';
 
 import AuthService from './_reactivestack/auth.service';
 import ClientSocket from "@/_reactivestack/client.socket";
-import _ from "lodash";
 
 const routes = [
 	{path: '/', component: Lorems, meta: {requiresAuth: true}},
@@ -34,21 +35,9 @@ const _clean = (path) => {
 };
 
 router.beforeEach(function (to, from, next) {
-	// console.log('\nrouter.beforeEach', to.path, 'loggedIn=' + AuthService.loggedIn());
 	ClientSocket.location(_clean(to.path));
-	if (to.matched.some((route) => route.meta.requiresAuth)) {
-		if (!AuthService.loggedIn()) {
-			next({
-				path: '/about'
-				// , params: {nextUrl: to.fullPath}
-			});
-		} else {
-			next();
-		}
-	} else {
-		next();
-	}
+	if (!AuthService.loggedIn() && to.matched.some((route) => route.meta.requiresAuth)) return next('/about');
+	next();
 });
 
 export default router;
-

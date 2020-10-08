@@ -33,8 +33,8 @@ const login = async (code) => {
 	const initialPageRequest = localStorage.getItem('initialPageRequest');
 	localStorage.removeItem('initialPageRequest');
 
-	if (!!initialPageRequest && '/logout' !== initialPageRequest) router.push(initialPageRequest);   // window.location = initialPageRequest;
-	else router.push('/');
+	const target = (!!initialPageRequest && '/logout' !== initialPageRequest) ? initialPageRequest : '/';
+	await router.push(target);
 	return true;
 };
 
