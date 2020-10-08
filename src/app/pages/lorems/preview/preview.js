@@ -30,8 +30,7 @@ export default {
 						draftCreate: {
 							__args: {
 								collectionName: "lorems",
-								sourceDocumentId: store.value.selectedLorem._id,
-								userId: AuthService.user().id
+								sourceDocumentId: store.value.selectedLorem._id
 							},
 							_id: true
 						}

@@ -47,7 +47,7 @@ export default {
 					let field = _.get(meta, fieldName);
 					if (field) {
 						let user = _.get(field, 'user');
-						return user !== AuthService.user().id;
+						return user !== AuthService.userId();
 					}
 				}
 			}
@@ -57,10 +57,7 @@ export default {
 		const isDraft = computed(() => !_.isEmpty(store.value.draft));
 
 		watch(isDraft, (value) => {
-			if (value !== true) {
-				alert('no more draft...');
-				// TODO: goto homepage...
-			}
+			if (value !== true) router.push('/');
 		});
 
 		return {
@@ -76,7 +73,6 @@ export default {
 				if (isDisabled(field)) return;
 
 				_sendMutationQuery('draftFocus', {
-					userId: AuthService.user().id,
 					draftId: store.value.draft._id,
 					field
 				});
@@ -84,7 +80,6 @@ export default {
 
 			onBlur: (field) => {
 				_sendMutationQuery('draftBlur', {
-					userId: AuthService.user().id,
 					draftId: store.value.draft._id,
 					field
 				});
@@ -95,7 +90,6 @@ export default {
 				store.value.setValue(field, value);
 
 				_sendMutationQuery('draftChange', {
-					userId: AuthService.user().id,
 					draftId: store.value.draft._id,
 					change: {value, field}
 				});
@@ -103,7 +97,6 @@ export default {
 
 			closeDialog: async () => {
 				const completed = await _sendMutationQuery('draftCancel', {
-					userId: AuthService.user().id,
 					draftId: store.value.draft._id
 				});
 				if (completed) router.push('/');
@@ -111,12 +104,9 @@ export default {
 			},
 
 			saveLorem: async () => {
-				const response = await fetch(VUE_APP_GRAPHQL_PATH + '/api/lorem/save/', {
-					method: 'POST',
-					headers: AuthService.getAuthHeader(),
-					body: JSON.stringify({document: store.value.lorem})
+				const completed = await _sendMutationQuery('draftSave', {
+					draft: store.value.draft
 				});
-				const completed = await response.json();
 				if (completed) router.push('/');
 				else console.error(' - saveLorem response', completed);	// oops...
 			}

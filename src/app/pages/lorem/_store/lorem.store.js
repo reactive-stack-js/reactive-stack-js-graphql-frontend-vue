@@ -22,7 +22,7 @@ export const loremStore = reactive({
 	setLorem(lorem) {
 		if (!lorem) return this.reset();
 
-		const userId = AuthService.user().id;
+		const userId = AuthService.userId();
 		const field = _.findKey(this.draft.meta, (field) => userId === field.user);
 		if (field) this.lorem = _.merge(this.lorem, _.omit(lorem, [field]));
 		else this.lorem = lorem;

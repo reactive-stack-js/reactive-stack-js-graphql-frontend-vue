@@ -18,6 +18,10 @@ class AuthService {
 		return this._user;
 	}
 
+	userId() {
+		return this._user.id;
+	}
+
 	jwt() {
 		return this._jwt;
 	}
