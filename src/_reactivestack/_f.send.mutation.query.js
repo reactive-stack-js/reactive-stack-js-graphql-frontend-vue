@@ -12,7 +12,7 @@ const sendMutationQuery = async (command, __args, fields) => {
 	const mutationQuery = jsonToGraphQLQuery({mutation}, {pretty: true});
 
 	const response = await fetch(VUE_APP_GRAPHQL_PATH, {
-		method: 'POST',
+		method: "POST",
 		headers: AuthService.getAuthHeader(),
 		body: JSON.stringify({query: mutationQuery})
 	});

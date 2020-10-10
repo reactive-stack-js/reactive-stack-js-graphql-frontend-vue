@@ -1,14 +1,14 @@
 /* eslint-disable no-debugger */
-const DEFAULT_USER_INFO = {user: {}, jwt: ''};
+const DEFAULT_USER_INFO = {user: {}, jwt: ""};
 
 const _getLocalStorageUserInfo = () => {
-	let userInfo = localStorage.getItem('userInfo');
+	let userInfo = localStorage.getItem("userInfo");
 	return userInfo ? JSON.parse(userInfo) : DEFAULT_USER_INFO;
 };
 
 class AuthService {
 	_user = {};
-	_jwt = '';
+	_jwt = "";
 
 	constructor() {
 		this.checkLocalStorage();
@@ -48,7 +48,7 @@ class AuthService {
 
 	refresh({user, jwt}) {
 		if (!!user && !!jwt) {
-			localStorage.setItem('userInfo', JSON.stringify({user, jwt}));
+			localStorage.setItem("userInfo", JSON.stringify({user, jwt}));
 			this.sendState({user, jwt});
 		} else {
 			// TODO: error?
@@ -58,7 +58,7 @@ class AuthService {
 	login(user, jwt) {
 		// debugger;
 		if (!!user && !!jwt) {
-			localStorage.setItem('userInfo', JSON.stringify({user, jwt}));
+			localStorage.setItem("userInfo", JSON.stringify({user, jwt}));
 			this.sendState({user, jwt});
 		} else {
 			this.logout();
@@ -67,14 +67,14 @@ class AuthService {
 
 	logout() {
 		// debugger;
-		localStorage.removeItem('userInfo');
+		localStorage.removeItem("userInfo");
 		this.sendState(DEFAULT_USER_INFO);
 	}
 
 	getAuthHeader() {
 		return {
-			'Content-Type': 'application/json',
-			'Authorization': 'Bearer ' + _getLocalStorageUserInfo().jwt,
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + _getLocalStorageUserInfo().jwt,
 		};
 	}
 }

@@ -1,15 +1,15 @@
-import {ref, onUnmounted} from 'vue';
+import {ref, onUnmounted} from "vue";
 
-import _ from 'lodash';
+import _ from "lodash";
 import moment from "moment";
 
 import AuthService from "@/_reactivestack/auth.service";
 
 import {loremsStore} from "./_store/lorems.store";
-import LoremsUpdater from './_store/lorems.updater';
+import LoremsUpdater from "./_store/lorems.updater";
 
-import Preview from './preview/Preview.vue';
-import Controls from './controls/Controls.vue';
+import Preview from "./preview/Preview.vue";
+import Controls from "./controls/Controls.vue";
 
 const _toggleSortingHelper = (sorting, label) => {
 	let sortingLabel = _.get(sorting, label, false);
@@ -26,7 +26,7 @@ const _toggleSortingHelper = (sorting, label) => {
 let updater;
 
 export default {
-	name: 'Lorems',
+	name: "Lorems",
 	components: {
 		Controls, Preview
 	},
@@ -36,7 +36,7 @@ export default {
 
 		let page = ref(1);
 		let pageSize = ref(10);
-		let search = ref('');
+		let search = ref("");
 		let sort = ref({createdAt: -1});
 
 		if (AuthService.loggedIn()) {
@@ -62,16 +62,16 @@ export default {
 			setUpdaterConfig,
 			page, pageSize, search, sort,
 
-			getRowClass: (lorem) => store.value.selectedLorem && lorem.itemId === store.value.selectedLorem.itemId ? 'active' : '',
+			getRowClass: (lorem) => store.value.selectedLorem && lorem.itemId === store.value.selectedLorem.itemId ? "active" : "",
 			hasSelected: () => !_.isEmpty(store.value.selectedLorem),
-			truncate: (text) => _.truncate(text, {'length': 75, 'separator': ' '}),
-			momentDate: (date) => moment(date).format('YYYY/MM/DD HH:mm:ss'),
+			truncate: (text) => _.truncate(text, {"length": 75, "separator": " "}),
+			momentDate: (date) => moment(date).format("YYYY/MM/DD HH:mm:ss"),
 
 			getIcon: (label) => {
 				let sortingLabel = sort.value[label];
-				if (sortingLabel < 0) return 'fa fa-long-arrow-down icon';
-				if (sortingLabel > 0) return 'fa fa-long-arrow-up icon';
-				return 'fa fa-blank icon';
+				if (sortingLabel < 0) return "fa fa-long-arrow-down icon";
+				if (sortingLabel > 0) return "fa fa-long-arrow-up icon";
+				return "fa fa-blank icon";
 			},
 
 			resendConfig: _.throttle(function (controls) {
@@ -84,7 +84,7 @@ export default {
 				search.value = searchValue;
 
 				setUpdaterConfig();
-			}, 100, {'leading': true, 'trailing': true}),
+			}, 100, {"leading": true, "trailing": true}),
 
 			selectRow: (lorem) => {
 				if (!_.isEmpty(store.value.selectedLorem) && lorem.itemId === store.value.selectedLorem.itemId) {
@@ -96,17 +96,17 @@ export default {
 
 			toggleSorting: (label) => {
 				let sorting = _.cloneDeep(sort.value);
-				if (label === 'firstname') {
-					sorting = _toggleSortingHelper(sorting, 'firstname');
-					sorting = _toggleSortingHelper(sorting, 'lastname');
+				if (label === "firstname") {
+					sorting = _toggleSortingHelper(sorting, "firstname");
+					sorting = _toggleSortingHelper(sorting, "lastname");
 				} else {
 					sorting = _toggleSortingHelper(sorting, label);
 				}
 
-				if (sorting['createdAt']) {
-					let createdAt = sorting['createdAt'];
-					delete sorting['createdAt'];
-					sorting['createdAt'] = createdAt;
+				if (sorting["createdAt"]) {
+					let createdAt = sorting["createdAt"];
+					delete sorting["createdAt"];
+					sorting["createdAt"] = createdAt;
 				}
 				sorting = _.pickBy(sorting, _.identity);
 				sort.value = sorting;

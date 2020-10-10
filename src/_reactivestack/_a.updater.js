@@ -10,7 +10,7 @@ export default class AUpdater {
 	destroy() {
 		this._subscription.unsubscribe();
 		this._subscription = null;
-		console.log(this._name, 'destroyed.');
+		console.log(this._name, "destroyed.");
 	}
 
 	constructor(name, config) {
@@ -20,9 +20,9 @@ export default class AUpdater {
 		this._init(config)
 			.then(() => {
 				this._initialized = true;
-				console.log(this._name, 'initialized.')
+				console.log(this._name, "initialized.")
 			})
-			.catch((err) => console.error(this._name, 'initialization error', err));
+			.catch((err) => console.error(this._name, "initialization error", err));
 	}
 
 	_isMyPath(path) {
@@ -41,12 +41,12 @@ export default class AUpdater {
 		this._subscription = clientSocket
 			.pipe(filter((message) => {
 				let {type, path} = message;
-				return 'update' === type && this._isMyPath(path);
+				return "update" === type && this._isMyPath(path);
 			}))
 			.subscribe({
 				next: (message) => this._process(message),
-				error: (err) => console.log('error', err),
-				complete: () => console.log('completed')
+				error: (err) => console.log("error", err),
+				complete: () => console.log("completed")
 			});
 
 		if (config) this.setConfig(config);

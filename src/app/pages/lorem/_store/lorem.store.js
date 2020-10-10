@@ -1,4 +1,4 @@
-import {reactive} from 'vue';
+import {reactive} from "vue";
 import _ from "lodash";
 
 import AuthService from "@/_reactivestack/auth.service";
@@ -15,7 +15,7 @@ export const loremStore = reactive({
 	setDraft(draft) {
 		if (!draft) return this.reset();
 
-		this.draft = _.omit(draft, ['document']);
+		this.draft = _.omit(draft, ["document"]);
 		this.setLorem(draft.document);
 	},
 

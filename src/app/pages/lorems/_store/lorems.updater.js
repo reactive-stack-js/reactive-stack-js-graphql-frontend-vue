@@ -1,24 +1,24 @@
 import _ from "lodash";
 
 import AUpdater from "@/_reactivestack/_a.updater";
-import {loremsStore} from './lorems.store';
+import {loremsStore} from "./lorems.store";
 import ClientSocket from "@/_reactivestack/client.socket";
 
 const _initialConfig = () => ({
 	page: 1,
 	pageSize: 10,
-	search: '',
+	search: "",
 	sort: {createdAt: -1}
 });
 
-const STRING_COLUMNS = ['firstname', 'lastname', 'email', 'description'];
-const NUMBER_COLUMNS = ['iteration', 'rating'];
-const _SECTIONS = ['lorems', 'selected', 'selectedVersions'];
+const STRING_COLUMNS = ["firstname", "lastname", "email", "description"];
+const NUMBER_COLUMNS = ["iteration", "rating"];
+const _SECTIONS = ["lorems", "selected", "selectedVersions"];
 
 export default class LoremsUpdater extends AUpdater {
 
 	constructor() {
-		super('LoremsUpdater');
+		super("LoremsUpdater");
 		this.setConfig(_initialConfig());
 	}
 
@@ -30,16 +30,16 @@ export default class LoremsUpdater extends AUpdater {
 		let {path, payload} = message;
 
 		switch (path) {
-			case 'lorems':
+			case "lorems":
 				loremsStore.setLorems(payload.lorems);
 				loremsStore.setLoremsTotalCount(payload._loremsCount);
 				break;
 
-			case 'selected':
+			case "selected":
 				loremsStore.setSelectedLorem(payload.selected);
 				break;
 
-			case 'selectedVersions':
+			case "selectedVersions":
 				loremsStore.setSelectedLoremVersions(payload.selectedVersions);
 				break;
 
@@ -76,10 +76,10 @@ export default class LoremsUpdater extends AUpdater {
 		}
 
 		ClientSocket.send({
-			type: 'subscribe',
-			target: 'lorems',
-			observe: 'lorems',
-			scope: 'many',
+			type: "subscribe",
+			target: "lorems",
+			observe: "lorems",
+			scope: "many",
 			config: {query, sort, page, pageSize}
 		});
 	}
@@ -90,8 +90,8 @@ export default class LoremsUpdater extends AUpdater {
 		loremsStore.setSelectedLoremVersions([]);
 
 		// TODO: implement unsubscribe!
-		ClientSocket.send({type: 'unsubscribe', target: 'selected'});
-		ClientSocket.send({type: 'unsubscribe', target: 'selectedVersions'});
+		ClientSocket.send({type: "unsubscribe", target: "selected"});
+		ClientSocket.send({type: "unsubscribe", target: "selectedVersions"});
 	}
 
 	select(lorem) {
@@ -99,10 +99,10 @@ export default class LoremsUpdater extends AUpdater {
 		loremsStore.setSelectedLoremVersions([]);	// cleanup
 
 		ClientSocket.send({
-			type: 'subscribe',
-			target: 'selected',
-			observe: 'lorems',
-			scope: 'one',
+			type: "subscribe",
+			target: "selected",
+			observe: "lorems",
+			scope: "one",
 			config: {
 				query: {
 					itemId: lorem.itemId,
@@ -112,10 +112,10 @@ export default class LoremsUpdater extends AUpdater {
 		});
 
 		ClientSocket.send({
-			type: 'subscribe',
-			target: 'selectedVersions',
-			observe: 'lorems',
-			scope: 'many',
+			type: "subscribe",
+			target: "selectedVersions",
+			observe: "lorems",
+			scope: "many",
 			config: {
 				query: {
 					itemId: lorem.itemId
