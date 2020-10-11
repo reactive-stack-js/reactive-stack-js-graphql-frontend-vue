@@ -1,4 +1,6 @@
 /* eslint-disable no-debugger */
+import ClientSocket from "@/_reactivestack/client.socket";
+
 const DEFAULT_USER_INFO = {user: {}, jwt: ""};
 
 const _getLocalStorageUserInfo = () => {
@@ -47,6 +49,7 @@ class AuthService {
 	}
 
 	refresh({user, jwt}) {
+		console.log("[Auth] refresh:", {user, jwt});
 		if (!!user && !!jwt) {
 			localStorage.setItem("userInfo", JSON.stringify({user, jwt}));
 			this.sendState({user, jwt});
@@ -56,17 +59,18 @@ class AuthService {
 	}
 
 	login(user, jwt) {
-		// debugger;
+		console.log("[Auth] login:", {user, jwt});
 		if (!!user && !!jwt) {
 			localStorage.setItem("userInfo", JSON.stringify({user, jwt}));
 			this.sendState({user, jwt});
+			ClientSocket.register();
 		} else {
 			this.logout();
 		}
 	}
 
 	logout() {
-		// debugger;
+		console.log("[Auth] logout.");
 		localStorage.removeItem("userInfo");
 		this.sendState(DEFAULT_USER_INFO);
 	}
