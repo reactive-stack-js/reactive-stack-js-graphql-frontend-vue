@@ -1,5 +1,5 @@
 import {filter} from "rxjs/operators";
-import ClientSocket from "@/_reactivestack/client.socket";
+import ClientSocket from "./client.socket";
 
 export default class AUpdater {
 	_initialized = false;

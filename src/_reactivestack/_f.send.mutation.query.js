@@ -3,6 +3,7 @@ import {jsonToGraphQLQuery} from "json-to-graphql-query";
 
 import AuthService from "@/_reactivestack/auth.service";
 
+// TODO: remove
 const VUE_APP_GRAPHQL_PATH = process.env.VUE_APP_GRAPHQL_PATH;
 
 const sendMutationQuery = async (command, __args, fields) => {
