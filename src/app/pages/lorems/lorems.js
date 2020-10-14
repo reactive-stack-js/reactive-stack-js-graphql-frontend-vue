@@ -49,7 +49,7 @@ export default {
 			updater = null;
 		});
 
-		const setUpdaterConfig = () => {
+		const _setUpdaterConfig = () => {
 			if (updater) {
 				updater.setConfig({page: page.value, pageSize: pageSize.value, search: search.value, sort: sort.value});
 			}
@@ -57,7 +57,6 @@ export default {
 
 		return {
 			store,
-			setUpdaterConfig,
 			page, pageSize, search, sort,
 
 			getRowClass: (lorem) => store.value.selectedLorem && lorem.itemId === store.value.selectedLorem.itemId ? "active" : "",
@@ -81,7 +80,7 @@ export default {
 				pageSize.value = pageSizeValue;
 				search.value = searchValue;
 
-				setUpdaterConfig();
+				_setUpdaterConfig();
 			}, 100, {"leading": true, "trailing": true}),
 
 			selectRow: (lorem) => {
@@ -109,7 +108,7 @@ export default {
 				sorting = _.pickBy(sorting, _.identity);
 				sort.value = sorting;
 
-				setUpdaterConfig();
+				_setUpdaterConfig();
 			}
 		};
 	}
