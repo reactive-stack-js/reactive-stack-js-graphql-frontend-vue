@@ -75,8 +75,7 @@ export default class LoremsUpdater extends AUpdater {
 			};
 		}
 
-		ClientSocket.send({
-			type: "subscribe",
+		ClientSocket.sendSubscribe({
 			target: "lorems",
 			observe: "lorems",
 			scope: "many",
@@ -90,16 +89,15 @@ export default class LoremsUpdater extends AUpdater {
 		loremsStore.setSelectedLoremVersions([]);
 
 		// TODO: implement unsubscribe!
-		ClientSocket.send({type: "unsubscribe", target: "selected"});
-		ClientSocket.send({type: "unsubscribe", target: "selectedVersions"});
+		ClientSocket.sendUnsubscribe({target: "selected"});
+		ClientSocket.sendUnsubscribe({target: "selectedVersions"});
 	}
 
 	select(lorem) {
 		loremsStore.setSelectedLorem(lorem);		// optimistic update
 		loremsStore.setSelectedLoremVersions([]);	// cleanup
 
-		ClientSocket.send({
-			type: "subscribe",
+		ClientSocket.sendSubscribe({
 			target: "selected",
 			observe: "lorems",
 			scope: "one",
@@ -111,8 +109,7 @@ export default class LoremsUpdater extends AUpdater {
 			}
 		});
 
-		ClientSocket.send({
-			type: "subscribe",
+		ClientSocket.sendSubscribe({
 			target: "selectedVersions",
 			observe: "lorems",
 			scope: "many",
