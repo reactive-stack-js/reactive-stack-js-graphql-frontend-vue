@@ -88,7 +88,6 @@ export default class LoremsUpdater extends AUpdater {
 		loremsStore.setSelectedLorem({});
 		loremsStore.setSelectedLoremVersions([]);
 
-		// TODO: implement unsubscribe!
 		ClientSocket.sendUnsubscribe({target: "selected"});
 		ClientSocket.sendUnsubscribe({target: "selectedVersions"});
 	}
