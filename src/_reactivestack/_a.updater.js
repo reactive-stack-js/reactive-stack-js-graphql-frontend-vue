@@ -1,7 +1,9 @@
 import {filter} from "rxjs/operators";
 import ClientSocket from "./client.socket";
+import _ from "lodash";
 
 export default class AUpdater {
+	_path;
 	_initialized = false;
 	_name;
 	_subscription;
@@ -16,6 +18,7 @@ export default class AUpdater {
 	constructor(name, config) {
 		if (!name) throw new Error("AUpdater::constructor error: Name is required.");
 		this._name = name;
+		this._path = '';
 
 		this._init(config)
 			.then(() => {
@@ -25,8 +28,8 @@ export default class AUpdater {
 			.catch((err) => console.error(this._name, "initialization error", err));
 	}
 
-	_isMyPath(path) {
-		return !!path;
+	_isPathValid(path) {
+		return _.includes(this._path, path);
 	}
 
 	_process() {
@@ -41,7 +44,7 @@ export default class AUpdater {
 		this._subscription = clientSocket
 			.pipe(filter((message) => {
 				let {type, path} = message;
-				return "update" === type && this._isMyPath(path);
+				return "update" === type && this._isPathValid(path);
 			}))
 			.subscribe({
 				next: (message) => this._process(message),
@@ -50,10 +53,6 @@ export default class AUpdater {
 			});
 
 		if (config) this.setConfig(config);
-	}
-
-	_initialConfig() {
-		return {};
 	}
 
 	setConfig() {

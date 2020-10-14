@@ -4,7 +4,5 @@ import User from "./user/User.vue";
 
 export default {
 	name: "Header",
-	components: {
-		Title, Menu, User
-	}
+	components: {Title, Menu, User}
 }

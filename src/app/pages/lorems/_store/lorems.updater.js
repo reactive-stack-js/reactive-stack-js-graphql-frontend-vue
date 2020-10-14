@@ -1,8 +1,9 @@
 import _ from "lodash";
 
 import AUpdater from "@/_reactivestack/_a.updater";
-import {loremsStore} from "./lorems.store";
+import loremsStore from "./lorems.store";
 import ClientSocket from "@/_reactivestack/client.socket";
+import orSearchFactory from "@/_reactivestack/_f.or.search.factory";
 
 const _initialConfig = () => ({
 	page: 1,
@@ -11,19 +12,21 @@ const _initialConfig = () => ({
 	sort: {createdAt: -1}
 });
 
-const STRING_COLUMNS = ["firstname", "lastname", "email", "description"];
-const NUMBER_COLUMNS = ["iteration", "rating"];
-const _SECTIONS = ["lorems", "selected", "selectedVersions"];
+const COLUMNS = {
+	firstname: 'string',
+	lastname: 'string',
+	email: 'string',
+	description: 'string',
+	rating: 'number',
+	iteration: 'number'
+}
 
 export default class LoremsUpdater extends AUpdater {
 
 	constructor() {
 		super("LoremsUpdater");
+		this._path = ["lorems", "selected", "selectedVersions"];
 		this.setConfig(_initialConfig());
-	}
-
-	_isMyPath(path) {
-		return _.includes(_SECTIONS, path);
 	}
 
 	_process(message) {
@@ -54,24 +57,9 @@ export default class LoremsUpdater extends AUpdater {
 
 		let query = {isLatest: true};
 		if (!_.isEmpty(search)) {
-			let or = _.map(STRING_COLUMNS, (column) => {
-				let q = {};
-				_.set(q, column, {$regex: search});
-				return q;
-			});
-			if (!isNaN(search)) {
-				let number = _.toInteger(search);
-				let numberOr = _.map(NUMBER_COLUMNS, (column) => {
-					let q = {};
-					_.set(q, column, number);
-					return q;
-				});
-				or = _.concat(or, numberOr);
-			}
-
 			query = {
 				isLatest: true,
-				$or: or
+				$or: orSearchFactory(search, COLUMNS)
 			};
 		}
 

@@ -5,7 +5,7 @@ import moment from "moment";
 
 import AuthService from "@/_reactivestack/auth.service";
 
-import {loremsStore} from "./_store/lorems.store";
+import loremsStore from "./_store/lorems.store";
 import LoremsUpdater from "./_store/lorems.updater";
 
 import Preview from "./preview/Preview.vue";
@@ -27,9 +27,7 @@ let updater;
 
 export default {
 	name: "Lorems",
-	components: {
-		Controls, Preview
-	},
+	components: {Controls, Preview},
 
 	setup() {
 		let store = ref(loremsStore);

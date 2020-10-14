@@ -20,9 +20,7 @@
 			<p><label class="preview-label">Description:</label></p>
 			<div>{{ store.selectedLorem.description }}<br/>&nbsp;</div>
 		</div>
-		<div id="lorems-preview-grid">
-			<Versions/>
-		</div>
+		<Versions/>
 	</div>
 
 </template>
