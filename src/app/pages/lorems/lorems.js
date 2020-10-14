@@ -50,9 +50,8 @@ export default {
 		});
 
 		const _setUpdaterConfig = () => {
-			if (updater) {
-				updater.setConfig({page: page.value, pageSize: pageSize.value, search: search.value, sort: sort.value});
-			}
+			if (!updater) return;
+			updater.setConfig({page: page.value, pageSize: pageSize.value, search: search.value, sort: sort.value});
 		};
 
 		return {
