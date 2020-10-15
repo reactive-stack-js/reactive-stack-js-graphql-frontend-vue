@@ -1,4 +1,4 @@
-import {ref, computed, watch, onUnmounted} from "vue";
+import {ref, computed, watch, onMounted, onUnmounted} from "vue";
 
 import _ from "lodash";
 import moment from "moment";
@@ -6,38 +6,32 @@ import moment from "moment";
 import router from "@/router";
 import AuthService from "@/_reactivestack/auth.service";
 
-import {loremStore} from "./_store/lorem.store";
-import LoremUpdater from "./_store/lorem.updater";
 import sendMutationQuery from "../../../_reactivestack/_f.send.mutation.query";
 import LocalStore from "@/_reactivestack/local.store";
-
-let updater;
 
 export default {
 	name: "Lorem",
 	props: ["draftId"],
 
 	setup(props) {
-		// LocalStore.init({
-		// 	draft: {
-		// 		observe: "drafts",
-		// 		initial: {}
-		// 	},
-		// });
-		// const store = ref(LocalStore.getStore());
-
-		const store = ref(loremStore);
+		LocalStore.init({
+			draft: {
+				observe: "drafts",
+				initial: {}
+			},
+		});
+		const store = ref(LocalStore.getStore());
 
 		if (AuthService.loggedIn()) {
-			if (updater) updater.destroy();
-			updater = new LoremUpdater();
-			updater.setConfig({_id: props.draftId});
+			LocalStore.sendSubscribe('draft', {_id: props.draftId});
 		}
 
+		onMounted(() => {
+			console.log('lorem onMounted');
+		});
+
 		onUnmounted(() => {
-			store.value.reset();
-			if (updater) updater.destroy();
-			updater = null;
+			console.log('lorem onMounted');
 		});
 
 		const isDisabled = (fieldName) => {
@@ -63,6 +57,8 @@ export default {
 		return {
 			store,
 
+			notLoaded: () => !_.get(store.value, 'draft.document', false),
+
 			SPECIES: ["Human", "Draenei", "Dryad", "Dwarf", "Gnome", "Worgde"],
 
 			isDraft, isDisabled,
@@ -87,7 +83,7 @@ export default {
 
 			onChange: _.throttle(function (e) {
 				let {target: {name: field, value}} = e;
-				store.value.setValue(field, value);
+				_.set(store.value.draft.document, field, value);
 
 				return sendMutationQuery("draftChange", {
 					draftId: store.value.draft._id,
