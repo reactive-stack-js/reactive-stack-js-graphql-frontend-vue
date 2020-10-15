@@ -5,15 +5,15 @@ import moment from "moment";
 import router from "@/router";
 
 import Versions from "./versions/Versions.vue";
-import loremsStore from "../_store/lorems.store";
 import sendMutationQuery from "../../../../_reactivestack/_f.send.mutation.query";
+import LocalStore from "@/_reactivestack/local.store";
 
 export default {
 	name: "Preview",
 	components: {Versions},
 
 	setup() {
-		let store = ref(loremsStore);
+		const store = ref(LocalStore.getStore());
 
 		return {
 			store,

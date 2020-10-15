@@ -3,48 +3,27 @@ import ClientSocket from "./client.socket";
 import _ from "lodash";
 
 export default class AUpdater {
-	_path;
-	_initialized = false;
+	_targets;
 	_name;
 	_subscription;
 	_config;
 
-	destroy() {
-		this._subscription.unsubscribe();
-		this._subscription = null;
-		console.log(this._name, "destroyed.");
-	}
-
 	constructor(name, config) {
 		if (!name) throw new Error("AUpdater::constructor error: Name is required.");
 		this._name = name;
-		this._path = '';
+		this._targets = '';
 
 		this._init(config)
-			.then(() => {
-				this._initialized = true;
-				console.log(this._name, "initialized.")
-			})
+			.then(() => console.log(this._name, "initialized."))
 			.catch((err) => console.error(this._name, "initialization error", err));
-	}
-
-	_isPathValid(path) {
-		return _.includes(this._path, path);
-	}
-
-	_process() {
-	}
-
-	isInitialized() {
-		return this._initialized;
 	}
 
 	async _init(config) {
 		let clientSocket = await ClientSocket.init();
 		this._subscription = clientSocket
 			.pipe(filter((message) => {
-				let {type, path} = message;
-				return "update" === type && this._isPathValid(path);
+				let {type, target} = message;
+				return "update" === type && this._isValidTarget(target);
 			}))
 			.subscribe({
 				next: (message) => this._process(message),
@@ -53,6 +32,23 @@ export default class AUpdater {
 			});
 
 		if (config) this.setConfig(config);
+	}
+
+	destroy() {
+		this._subscription.unsubscribe();
+		this._subscription = null;
+		console.log(this._name, "destroyed.");
+	}
+
+	set targets(target) {
+		this._targets = target;
+	}
+
+	_isValidTarget(target) {
+		return _.includes(this._targets, target);
+	}
+
+	_process() {
 	}
 
 	setConfig() {

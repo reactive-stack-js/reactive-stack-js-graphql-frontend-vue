@@ -9,6 +9,7 @@ import AuthService from "@/_reactivestack/auth.service";
 import {loremStore} from "./_store/lorem.store";
 import LoremUpdater from "./_store/lorem.updater";
 import sendMutationQuery from "../../../_reactivestack/_f.send.mutation.query";
+import LocalStore from "@/_reactivestack/local.store";
 
 let updater;
 
@@ -17,7 +18,15 @@ export default {
 	props: ["draftId"],
 
 	setup(props) {
-		let store = ref(loremStore);
+		// LocalStore.init({
+		// 	draft: {
+		// 		observe: "drafts",
+		// 		initial: {}
+		// 	},
+		// });
+		// const store = ref(LocalStore.getStore());
+
+		const store = ref(loremStore);
 
 		if (AuthService.loggedIn()) {
 			if (updater) updater.destroy();

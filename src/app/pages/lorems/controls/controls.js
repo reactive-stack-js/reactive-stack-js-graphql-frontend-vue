@@ -1,15 +1,17 @@
 import {ref, computed, watch} from "vue";
-import loremsStore from "../_store/lorems.store";
+import LocalStore from "@/_reactivestack/local.store";
 
 export default {
 	name: "Controls",
 	emits: ["resend-config"],
 
 	setup(props, context) {
+		const store = ref(LocalStore.getStore());
+
 		let page = ref(1);
 		let pageSize = ref(10);
 		let search = ref("");
-		let pageCount = computed(() => parseInt(loremsStore.loremsTotalCount / pageSize.value, 10) + 1);
+		let pageCount = computed(() => parseInt(store.value.loremsCount / pageSize.value, 10) + 1);
 
 		const emitResendConfig = () => context.emit("resend-config", {
 			page: page.value,

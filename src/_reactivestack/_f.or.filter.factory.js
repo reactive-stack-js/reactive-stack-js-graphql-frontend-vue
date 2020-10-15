@@ -7,14 +7,16 @@ const _getCleanColumnNames = (columns, type) => {
 }
 
 // TODO: add dates/ranges
-const orSearchFactory = (search, columns) => {
+const orFilterFactory = (search, columns) => {
 	const stringColumns = _getCleanColumnNames(columns, 'string');
 	const numberColumns = _getCleanColumnNames(columns, 'number');
+
 	let or = _.map(stringColumns, (column) => {
 		let q = {};
 		_.set(q, column, {$regex: search, $options: 'i'});
 		return q;
 	});
+
 	if (!isNaN(search)) {
 		let number = _.toInteger(search);
 		let numberOr = _.map(numberColumns, (column) => {
@@ -24,6 +26,7 @@ const orSearchFactory = (search, columns) => {
 		});
 		or = _.concat(or, numberOr);
 	}
+
 	return or;
 };
-export default orSearchFactory;
+export default orFilterFactory;

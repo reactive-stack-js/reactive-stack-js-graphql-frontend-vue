@@ -2,18 +2,25 @@ import {ref} from "vue";
 
 import moment from "moment";
 
-import loremsStore from "@/app/pages/lorems/_store/lorems.store";
+import _ from "lodash";
+import LocalStore from "@/_reactivestack/local.store";
 
 export default {
 	name: "PreviewVersions",
 	setup() {
-		let store = ref(loremsStore);
+		const store = ref(LocalStore.getStore());
+
+		const isSelected = (lorem) => _.get(lorem, '_id', 1) === _.get(store.value.selectedLorem, '_id', 2);
+
 		return {
-			store,
-			getVersions: () => store.value.getVersions(),
-			getRowClass: (lorem) => store.value.isSelected(lorem) ? "active" : "",
+			store, isSelected,
+			getVersions: () => store.value.selectedLoremVersions,
+			getRowClass: (lorem) => isSelected(lorem) ? "active" : "",
 			momentDate: (date) => moment(date).format("YYYY/MM/DD HH:mm:ss"),
-			selectRow: (lorem) => store.value.pick(lorem)
+			selectRow: (lorem) => {
+				store.value.selectedLorem = lorem;
+				LocalStore.sendSubscribe("selectedLorem", {query: {_id: lorem._id}});
+			}
 		}
 	}
 }

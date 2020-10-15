@@ -7,13 +7,13 @@ const _initialConfig = () => ({_id: null});
 export default class LoremUpdater extends AUpdater {
 	constructor() {
 		super("LoremUpdater");
-		this._path = 'draft';
+		this._targets = 'draft';
 	}
 
 	_process(message) {
-		let {path, payload} = message;
+		let {target, payload} = message;
 
-		switch (path) {
+		switch (target) {
 			case "draft":
 				loremStore.setDraft(payload.draft);
 				break;
