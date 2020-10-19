@@ -3,7 +3,7 @@ import {ref} from "vue";
 import moment from "moment";
 
 import _ from "lodash";
-import LocalStore from "@/_reactivestack/local.store";
+import LocalStore from "@/_reactivestack/store/local.store";
 
 export default {
 	name: "PreviewVersions",

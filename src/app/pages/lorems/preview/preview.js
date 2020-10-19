@@ -6,7 +6,7 @@ import router from "@/router";
 
 import Versions from "./versions/Versions.vue";
 import sendMutationQuery from "../../../../_reactivestack/_f.send.mutation.query";
-import LocalStore from "@/_reactivestack/local.store";
+import LocalStore from "@/_reactivestack/store/local.store";
 
 export default {
 	name: "Preview",

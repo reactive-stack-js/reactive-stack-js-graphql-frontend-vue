@@ -5,34 +5,29 @@ import moment from "moment";
 
 import router from "@/router";
 import AuthService from "@/_reactivestack/auth.service";
-
+import LocalStore from "@/_reactivestack/store/local.store";
+import StoreTargets from "@/_reactivestack/store/store.targets";
 import sendMutationQuery from "../../../_reactivestack/_f.send.mutation.query";
-import LocalStore from "@/_reactivestack/local.store";
 
 export default {
 	name: "Lorem",
 	props: ["draftId"],
 
 	setup(props) {
-		LocalStore.init({
-			draft: {
-				observe: "drafts",
-				initial: {}
-			},
-		});
+		const storeTargets = new StoreTargets();
+		storeTargets.addTarget('draft', 'drafts', {});
+
+		LocalStore
+			.init(storeTargets)
+			.then(() => {
+				if (AuthService.loggedIn()) {
+					LocalStore.sendSubscribe('draft', {_id: props.draftId});
+				}
+			});
 		const store = ref(LocalStore.getStore());
 
-		if (AuthService.loggedIn()) {
-			LocalStore.sendSubscribe('draft', {_id: props.draftId});
-		}
-
-		onMounted(() => {
-			console.log('lorem onMounted');
-		});
-
-		onUnmounted(() => {
-			console.log('lorem onMounted');
-		});
+		onMounted(() => console.log('lorem onMounted'));
+		onUnmounted(() => console.log('lorem onUnmounted'));
 
 		const isDisabled = (fieldName) => {
 			if (store.value.draft) {

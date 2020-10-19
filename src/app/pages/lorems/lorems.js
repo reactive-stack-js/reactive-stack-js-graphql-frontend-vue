@@ -3,11 +3,12 @@ import {ref, onMounted, onUnmounted} from 'vue';
 import _ from 'lodash';
 import moment from 'moment';
 
-import AuthService from '@/_reactivestack/auth.service';
-
 import Preview from './preview/Preview.vue';
 import Controls from './controls/Controls.vue';
-import LocalStore from '@/_reactivestack/local.store';
+
+import AuthService from '@/_reactivestack/auth.service';
+import LocalStore from '@/_reactivestack/store/local.store';
+import StoreTargets from "@/_reactivestack/store/store.targets";
 import gridSearchConfigFactory from '@/_reactivestack/_f.grid.search.config.factory';
 
 const _toggleSortingHelper = (sorting, label) => {
@@ -38,38 +39,26 @@ export default {
 	components: {Controls, Preview},
 
 	setup() {
-		LocalStore.init({
-			lorems: {
-				observe: 'lorems',
-				initial: [],
-			},
-			selectedLorem: {
-				observe: 'lorems',
-				initial: {},
-			},
-			selectedLoremVersions: {
-				observe: 'lorems',
-				initial: [],
-			},
-		});
+		const storeTargets = new StoreTargets();
+		storeTargets.addTarget('lorems', 'lorems', []);
+		storeTargets.addTarget('selectedLorem', 'lorems', {});
+		storeTargets.addTarget('selectedLoremVersions', 'lorems', []);
+
+		LocalStore.init(storeTargets)
+			.then(() => {
+				if (AuthService.loggedIn()) {
+					LocalStore.sendSubscribe('lorems', gridSearchConfigFactory(COLUMNS));
+				}
+			});
 		const store = ref(LocalStore.getStore());
+
+		onMounted(() => console.log('lorems onMounted'));
+		onUnmounted(() => console.log('lorems onUnmounted'));
 
 		let page = ref(1);
 		let pageSize = ref(10);
 		let search = ref('');
 		let sort = ref({createdAt: -1});
-
-		if (AuthService.loggedIn()) {
-			LocalStore.sendSubscribe('lorems', gridSearchConfigFactory(COLUMNS));
-		}
-
-		onMounted(() => {
-			console.log('lorems onMounted');
-		});
-
-		onUnmounted(() => {
-			console.log('lorems onMounted');
-		});
 
 		const _setConfig = () => {
 			const config = gridSearchConfigFactory(COLUMNS, {

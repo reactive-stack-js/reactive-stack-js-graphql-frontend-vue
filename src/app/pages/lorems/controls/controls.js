@@ -1,5 +1,5 @@
 import {ref, computed, watch} from "vue";
-import LocalStore from "@/_reactivestack/local.store";
+import LocalStore from "@/_reactivestack/store/local.store";
 
 export default {
 	name: "Controls",

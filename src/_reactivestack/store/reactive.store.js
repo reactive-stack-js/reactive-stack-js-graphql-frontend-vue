@@ -2,7 +2,7 @@ import _ from "lodash";
 import {reactive} from "vue";
 import {filter} from "rxjs/operators";
 
-import ClientSocket from "./client.socket";
+import ClientSocket from "../client.socket";
 
 const _isValidMessage = (targets, message) => {
 	const {type, target} = message;
@@ -10,11 +10,13 @@ const _isValidMessage = (targets, message) => {
 }
 
 export default class ReactiveStore {
+	_name;
 	_subscription;
 	_targets;
 	_store;
 
-	constructor() {
+	constructor(name) {
+		this._name = name;
 	}
 
 	sendSubscribe(target, config) {
@@ -29,7 +31,10 @@ export default class ReactiveStore {
 	}
 
 	// TODO: refactor
-	async init(targets) {
+	async init(storeTargets) {
+		if (this._subscription) this.destroy();
+
+		const targets = storeTargets.targets;
 		if (!_.isPlainObject(targets)) throw new Error("Invalid targets! Expected plain object with attributes and initial values.");
 		this._targets = targets;
 
@@ -49,9 +54,6 @@ export default class ReactiveStore {
 		});
 		this._store = reactive(store);
 
-		if (this._subscription) this._subscription.unsubscribe();
-		this._subscription = null;
-
 		let clientSocket = await ClientSocket.init();
 		this._subscription = clientSocket
 			.pipe(filter((message) => _isValidMessage(this._targets, message)))
@@ -60,7 +62,7 @@ export default class ReactiveStore {
 				error: (err) => console.log("error", err),
 				complete: () => console.log("completed")
 			});
-		console.log("ReactiveStore initialized.");
+		console.log(this._name, 'initialized.');
 
 		return this._store;
 	}
@@ -72,7 +74,8 @@ export default class ReactiveStore {
 	destroy() {
 		this._subscription.unsubscribe();
 		this._subscription = null;
-		console.log("ReactiveStore destroyed.");
+		this._store = null;
+		console.log(this._name, 'destroyed.');
 	}
 
 	_process(message) {
