@@ -17,12 +17,12 @@ export default class GlobalStore {
 		GlobalStore._instance.removeTarget(name);
 	}
 
-	static sendSubscribe(target, config) {
-		GlobalStore._instance.sendSubscribe(target, config);
+	static updateSubscription(target, config) {
+		GlobalStore._instance.updateSubscription(target, config);
 	}
 
-	static sendUnsubscribe(target) {
-		GlobalStore._instance.sendUnsubscribe(target);
+	static closeSubscription(target) {
+		GlobalStore._instance.closeSubscription(target);
 	}
 
 	static getStore() {

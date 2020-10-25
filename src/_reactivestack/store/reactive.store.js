@@ -20,15 +20,15 @@ export default class ReactiveStore {
 		this._targets = {};
 	}
 
-	sendSubscribe(target, config) {
-		console.log('sendSubscribe', {target, config});
+	updateSubscription(target, config) {
+		console.log('updateSubscription', {target, config});
 		const {observe, scope} = this._targets[target];
 		if (!observe || !scope) return;
-		ClientSocket.sendSubscribe({target, observe, scope, config});
+		ClientSocket.updateSubscription({target, observe, scope, config});
 	}
 
-	sendUnsubscribe(target) {
-		ClientSocket.sendUnsubscribe({target});
+	closeSubscription(target) {
+		ClientSocket.closeSubscription({target});
 	}
 
 	addTarget(name, collection, initial) {

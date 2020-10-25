@@ -17,12 +17,12 @@ export default class LocalStore {
 		LocalStore._instance.removeTarget(name);
 	}
 
-	static sendSubscribe(target, config) {
-		LocalStore._instance.sendSubscribe(target, config);
+	static updateSubscription(target, config) {
+		LocalStore._instance.updateSubscription(target, config);
 	}
 
-	static sendUnsubscribe(target) {
-		LocalStore._instance.sendUnsubscribe(target);
+	static closeSubscription(target) {
+		LocalStore._instance.closeSubscription(target);
 	}
 
 	static getStore() {
