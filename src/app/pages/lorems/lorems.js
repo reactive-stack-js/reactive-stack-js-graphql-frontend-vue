@@ -44,8 +44,7 @@ export default {
 		storeTargets.addTarget('selectedLorem', 'lorems', {});
 		storeTargets.addTarget('selectedLoremVersions', 'lorems', []);
 
-		LocalStore //
-			.init(storeTargets)
+		LocalStore.init(storeTargets) //
 			.then(() => {
 				if (AuthService.loggedIn()) {
 					LocalStore.sendSubscribe('lorems', gridSearchConfigFactory(COLUMNS));
