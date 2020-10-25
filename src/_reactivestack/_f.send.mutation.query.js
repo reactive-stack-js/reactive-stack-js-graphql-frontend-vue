@@ -1,7 +1,7 @@
-import _ from "lodash";
-import {jsonToGraphQLQuery} from "json-to-graphql-query";
+import _ from 'lodash';
+import {jsonToGraphQLQuery} from 'json-to-graphql-query';
 
-import AuthService from "@/_reactivestack/auth.service";
+import AuthService from '@/_reactivestack/auth.service';
 
 const VUE_APP_GRAPHQL_PATH = process.env.VUE_APP_GRAPHQL_PATH;
 
@@ -12,7 +12,7 @@ const sendMutationQuery = async (command, __args, fields) => {
 	const mutationQuery = jsonToGraphQLQuery({mutation}, {pretty: true});
 
 	const response = await fetch(VUE_APP_GRAPHQL_PATH, {
-		method: "POST",
+		method: 'POST',
 		headers: AuthService.getAuthHeader(),
 		body: JSON.stringify({query: mutationQuery})
 	});

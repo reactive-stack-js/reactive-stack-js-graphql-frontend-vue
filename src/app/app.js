@@ -1,20 +1,19 @@
-import Header from "./pages/header/Header.vue";
-import StoreTargets from "@/_reactivestack/store/store.targets";
-import GlobalStore from "@/_reactivestack/store/global.store";
+import Header from './pages/header/Header.vue';
+import StoreTargets from '@/_reactivestack/store/store.targets';
+import GlobalStore from '@/_reactivestack/store/global.store';
 
 export default {
-	name: "App",
+	name: 'App',
 	components: {Header},
 
 	setup() {
 		const storeTargets = new StoreTargets();
 
 		// TODO:
-		GlobalStore.init(storeTargets)
-			.then(() => {
-				// sendSubscribe...target, config
-			});
+		GlobalStore.init(storeTargets).then(() => {
+			// sendSubscribe...target, config
+		});
 
 		return {};
 	}
-}
+};
