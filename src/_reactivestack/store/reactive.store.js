@@ -41,6 +41,11 @@ export default class ReactiveStore {
 		if (_.isArray(initial)) _.set(this._store, name + 'Count', 0);
 	}
 
+	removeTarget(name) {
+		_.unset(this._targets, name);
+		_.unset(this._store, name);
+	}
+
 	async init() {
 		this._targets = {};
 		this._store = reactive({});
