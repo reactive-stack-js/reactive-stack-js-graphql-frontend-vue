@@ -1,12 +1,11 @@
 import _ from "lodash";
 import {Subject} from "rxjs";
+import {v4 as uuidv4} from "uuid";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
-import uuidv4 from "./_f.uuidv4";
 import AuthService from "./auth.service";
 
-// TODO: should depend on environment...
-const WS_URI = "ws://localhost:3007/ws";
+const WS_URI = 'ws:' + process.env.VUE_APP_API_PATH + '/ws';
 
 const _path = () => {
 	let path = _.trim(_.get(window, "location.pathname", ""));

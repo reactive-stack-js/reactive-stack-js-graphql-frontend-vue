@@ -3,10 +3,9 @@ import {ref} from "vue";
 import moment from "moment";
 
 import router from "@/router";
-
 import Versions from "./versions/Versions.vue";
-import sendMutationQuery from "../../../../_reactivestack/_f.send.mutation.query";
 import LocalStore from "@/_reactivestack/store/local.store";
+import sendMutationQuery from "../../../../_reactivestack/_f.send.mutation.query";
 
 export default {
 	name: "Preview",
