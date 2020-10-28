@@ -6,7 +6,7 @@ import moment from 'moment';
 import router from '@/router';
 import AuthService from '@/_reactivestack/auth.service';
 import LocalStore from '@/_reactivestack/store/local.store';
-import sendMutationQuery from '../../../_reactivestack/_f.send.mutation.query';
+import sendMutationQuery from '../../../util/_f.send.mutation.query';
 
 export default {
 	name: 'Lorem',
