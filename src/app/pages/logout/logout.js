@@ -3,6 +3,11 @@ import AuthService from '@/_reactivestack/auth.service';
 
 export default {
 	name: 'Logout',
+
+	route() {
+		return {path: '/logout', component: this};
+	},
+
 	beforeCreate() {
 		AuthService.logout();
 		router.push('/');
