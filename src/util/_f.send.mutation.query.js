@@ -5,9 +5,9 @@ import AuthService from '@/_reactivestack/auth.service';
 
 const VUE_APP_GRAPHQL_PATH = process.env.VUE_APP_GRAPHQL_PATH;
 
-const sendMutationQuery = async (command, __args, fields) => {
+const sendMutationQuery = async (command, args, fields) => {
 	const mutation = {};
-	mutation[command] = {__args};
+	mutation[command] = {__args: args};
 	mutation[command] = _.merge(mutation[command], fields);
 	const mutationQuery = jsonToGraphQLQuery({mutation}, {pretty: true});
 
