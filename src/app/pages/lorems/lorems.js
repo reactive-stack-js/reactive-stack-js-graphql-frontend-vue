@@ -1,4 +1,4 @@
-import {ref, onMounted, onUnmounted} from 'vue';
+import {ref} from 'vue';
 
 import _ from 'lodash';
 import moment from 'moment';
@@ -42,20 +42,11 @@ export default {
 	},
 
 	setup() {
-		LocalStore.init() //
-			.then(() => {
-				if (AuthService.loggedIn()) {
-					LocalStore.updateSubscription('lorems', gridSearchConfigFactory(COLUMNS));
-				}
-			});
+		const store = ref(LocalStore.init());
 		LocalStore.addTarget('lorems', 'lorems', []);
 		LocalStore.addTarget('selectedLorem', 'lorems', {});
 		LocalStore.addTarget('selectedLoremVersions', 'lorems', []);
-
-		const store = ref(LocalStore.getStore());
-
-		onMounted(() => console.log('lorems onMounted'));
-		onUnmounted(() => console.log('lorems onUnmounted'));
+		LocalStore.updateSubscription('lorems', gridSearchConfigFactory(COLUMNS));
 
 		let page = ref(1);
 		let pageSize = ref(10);
