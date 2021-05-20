@@ -9,7 +9,7 @@ import Lorems from './app/pages/lorems/Lorems.vue';
 import Logout from './app/pages/logout/Logout.vue';
 import Social from './app/pages/login/Social.vue';
 
-import AuthService from './_reactivestack/auth.service';
+import Auth from './_reactivestack/auth';
 import ClientSocket from '@/_reactivestack/client.socket';
 
 const routes = [
@@ -36,7 +36,7 @@ const _clean = (path) => {
 
 router.beforeEach(function (to, from, next) {
 	ClientSocket.location(_clean(to.path));
-	if (!AuthService.loggedIn() && to.matched.some((route) => route.meta.requiresAuth)) return next('/about');
+	if (!Auth.loggedIn() && to.matched.some((route) => route.meta.requiresAuth)) return next('/about');
 	next();
 });
 

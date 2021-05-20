@@ -6,7 +6,7 @@ import moment from 'moment';
 import Preview from './preview/Preview.vue';
 import Controls from './controls/Controls.vue';
 
-import AuthService from '@/_reactivestack/auth.service';
+import Auth from '@/_reactivestack/auth.service';
 import LocalStore from '@/_reactivestack/store/local.store';
 import gridSearchConfigFactory from '@/_reactivestack/_f.grid.search.config.factory';
 
