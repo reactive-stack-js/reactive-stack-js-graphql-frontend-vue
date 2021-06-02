@@ -5,7 +5,7 @@ import moment from 'moment';
 import router from '@/router';
 import Versions from './versions/Versions.vue';
 import LocalStore from '@/_reactivestack/store/local.store';
-import sendMutationQuery from '../../../../functions/_f.send.mutation.query';
+import sendMutationQuery from '@/functions/send.mutation.query';
 
 export default {
 	name: 'Preview',
